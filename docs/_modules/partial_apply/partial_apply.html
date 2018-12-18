@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>partial_apply.partial_apply &mdash; partial_apply 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> partial_apply
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">partial_apply</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>partial_apply.partial_apply</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for partial_apply.partial_apply</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Partial application of functions and method names, supporting placeholder</span>
+<span class="sd">values for positional arguments.</span>
+
+<span class="sd">Unlike :func:`functools.partial`, placeholder values are supported so that</span>
+<span class="sd">positional arguments for partial application do not need to be supplied solely</span>
+<span class="sd">from left to right. Keyword arguments are handled equivalently to</span>
+<span class="sd">:func:`functools.partial()`. It is also possible to &quot;partially apply&quot; a method</span>
+<span class="sd">name, producing a function which looks up the method to call on the object</span>
+<span class="sd">supplied as its first argument.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=useless-object-inheritance</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Empty&#39;</span><span class="p">,</span> <span class="s1">&#39;PartialFn&#39;</span><span class="p">,</span> <span class="s1">&#39;PartialMethod&#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">EmptyType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A placeholder for arguments which will be supplied later.&quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Empty&#39;</span>
+
+<span class="n">Empty</span> <span class="o">=</span> <span class="n">EmptyType</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="PartialFn"><a class="viewcode-back" href="../../index.html#partial_apply.PartialFn">[docs]</a><span class="k">class</span> <span class="nc">PartialFn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A function partially applied to positional and keyword arguments.</span>
+
+<span class="sd">    Keyword arguments are handled equivalently to :func:`functools.partial`, but</span>
+<span class="sd">    arbitrary sets of positional arguments can be partially applied.</span>
+
+<span class="sd">    :Examples:</span>
+
+<span class="sd">    Skipping partial application of positional arguments using the</span>
+<span class="sd">    :data:`Empty` placeholder:</span>
+
+<span class="sd">    Create a partially applied function from ``fn`` where the third argument</span>
+<span class="sd">    is ``&#39;thing&#39;``.</span>
+
+<span class="sd">    &gt;&gt;&gt; def fn(*args):</span>
+<span class="sd">    &gt;&gt;&gt;     return args</span>
+
+<span class="sd">    &gt;&gt;&gt; p = PartialFn(fn, Empty, Empty, &#39;thing&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; p</span>
+<span class="sd">    PartialFn(&lt;function fn at 0x11b29a598&gt;, Empty, Empty, &#39;thing&#39;)</span>
+
+<span class="sd">    With two placeholders, you must call ``p`` with at least two positional</span>
+<span class="sd">    arguments. They fill in the placeholders from left to right.</span>
+
+<span class="sd">    &gt;&gt;&gt; p(1, 2)</span>
+<span class="sd">    (1, 2, &#39;thing&#39;)</span>
+
+<span class="sd">    Subsequent positional arguments to ``p`` are applied after the third</span>
+<span class="sd">    parameter.</span>
+
+<span class="sd">    &gt;&gt;&gt; p(1, 2, 3)</span>
+<span class="sd">    (1, 2, &#39;thing&#39;, 3)</span>
+
+<span class="sd">    :ivar func: The wrapped function.</span>
+<span class="sd">    :vartype func: callable</span>
+<span class="sd">    :ivar args: Positional arguments for the wrapped function.</span>
+<span class="sd">    :vartype args: tuple</span>
+<span class="sd">    :ivar kwargs: Keyword arguments for the wrapped function.</span>
+<span class="sd">    :vartype kwargs: dict[str, any]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PartialFn.__init__"><a class="viewcode-back" href="../../index.html#partial_apply.PartialFn.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new partially applied function.</span>
+
+<span class="sd">        :param callable func: The function to wrap.</span>
+<span class="sd">        :param args: Positional arguments for the wrapped function.</span>
+<span class="sd">        :param kwargs: Keyword arguments for the wrapped function.</span>
+<span class="sd">        :raises TypeError: If the first argument is not callable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;the first argument must be callable&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="PartialFn.__call__"><a class="viewcode-back" href="../../index.html#partial_apply.PartialFn.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calls the partially applied function.</span>
+
+<span class="sd">        :param args: Additional positional arguments for the wrapped</span>
+<span class="sd">            function.</span>
+<span class="sd">        :param kwargs: Additional keyword arguments for the wrapped</span>
+<span class="sd">            function.</span>
+<span class="sd">        :return: The return value of the wrapped function.</span>
+<span class="sd">        :rtype: any</span>
+<span class="sd">        :raises TypeError: If less positional arguments are supplied than</span>
+<span class="sd">            placeholders.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="n">Empty</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+                    <span class="n">new_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">expected</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">Empty</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;expected at least </span><span class="si">{}</span><span class="s1"> values for placeholders, got </span><span class="si">{}</span><span class="s1">&#39;</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="n">new_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:])</span>
+        <span class="n">new_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">new_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">new_args</span><span class="p">,</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fmt_kwargs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="n">fmt_all_args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)]</span>
+        <span class="n">fmt_all_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">fmt_all_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">fmt_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fmt_all_args</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PartialMethod"><a class="viewcode-back" href="../../index.html#partial_apply.PartialMethod">[docs]</a><span class="k">class</span> <span class="nc">PartialMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A method name partially applied to positional and keyword arguments.</span>
+
+<span class="sd">    Keyword arguments are handled equivalently to :func:`functools.partial`, but</span>
+<span class="sd">    arbitrary sets of positional arguments can be partially applied (see</span>
+<span class="sd">    :class:`PartialFn` for an example). When an instance of</span>
+<span class="sd">    :class:`PartialMethod` is called, the object to look up the method on is</span>
+<span class="sd">    supplied as the first argument.</span>
+
+<span class="sd">    :Examples:</span>
+
+<span class="sd">    Setting up some example classes.</span>
+
+<span class="sd">    &gt;&gt;&gt; class SomeClass:</span>
+<span class="sd">    &gt;&gt;&gt;     def method(self, *args):</span>
+<span class="sd">    &gt;&gt;&gt;         return args</span>
+
+<span class="sd">    &gt;&gt;&gt; some_instance = SomeClass()</span>
+
+<span class="sd">    &gt;&gt;&gt; class OtherClass:</span>
+<span class="sd">    &gt;&gt;&gt;     def method(self, *args):</span>
+<span class="sd">    &gt;&gt;&gt;         return sum(args)</span>
+
+<span class="sd">    &gt;&gt;&gt; other_instance = OtherClass()</span>
+
+<span class="sd">    Create a partially applied function where the method name is ``method`` and</span>
+<span class="sd">    the second positional argument is 1.</span>
+
+<span class="sd">    &gt;&gt;&gt; p = PartialMethod(&#39;method&#39;, Empty, 1)</span>
+<span class="sd">    &gt;&gt;&gt; p</span>
+<span class="sd">    PartialMethod(&#39;method&#39;, Empty, 1)</span>
+
+<span class="sd">    The partially applied function takes the object to look up the method on as</span>
+<span class="sd">    the first argument. Subsequent positional arguments are handled as in</span>
+<span class="sd">    :class:`PartialFn`. Apply the function to different objects of different</span>
+<span class="sd">    types (they must all have a method named ``method``).</span>
+
+<span class="sd">    &gt;&gt;&gt; p(some_instance, 2, 3)</span>
+<span class="sd">    (2, 1, 3)</span>
+
+<span class="sd">    &gt;&gt;&gt; p(other_instance, 2, 3)</span>
+<span class="sd">    6</span>
+
+<span class="sd">    :ivar name: The method name.</span>
+<span class="sd">    :vartype name: str</span>
+<span class="sd">    :ivar args: Positional arguments for the method.</span>
+<span class="sd">    :vartype args: tuple</span>
+<span class="sd">    :ivar kwargs: Keyword arguments for the method.</span>
+<span class="sd">    :vartype kwargs: dict[str, any]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PartialMethod.__init__"><a class="viewcode-back" href="../../index.html#partial_apply.PartialMethod.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new partially applied method name.</span>
+
+<span class="sd">        :param str name: The method name.</span>
+<span class="sd">        :param args: Positional arguments for the method.</span>
+<span class="sd">        :param kwargs: Keyword arguments for the method.</span>
+<span class="sd">        :raises TypeError: If the first argument is not a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;the first argument must be a string&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="PartialMethod.__call__"><a class="viewcode-back" href="../../index.html#partial_apply.PartialMethod.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Looks up and calls the method.</span>
+
+<span class="sd">        :param any obj: The object to look up the method on.</span>
+<span class="sd">        :param args: Additional positional arguments for the method.</span>
+<span class="sd">        :param kwargs: Additional keyword arguments for the method.</span>
+<span class="sd">        :return: The return value of the method.</span>
+<span class="sd">        :rtype: any</span>
+<span class="sd">        :raises TypeError: If less positional arguments are supplied than</span>
+<span class="sd">            placeholders.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="n">Empty</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+                    <span class="n">new_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">expected</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">Empty</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;expected at least </span><span class="si">{}</span><span class="s1"> values for placeholders, got </span><span class="si">{}</span><span class="s1">&#39;</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="n">new_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:])</span>
+        <span class="n">new_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">new_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">new_args</span><span class="p">,</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fmt_kwargs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="n">fmt_all_args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span>
+        <span class="n">fmt_all_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">fmt_all_args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">fmt_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fmt_all_args</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Katherine Crowson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to partial_apply’s documentation! &mdash; partial_apply 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> partial_apply
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to partial_apply’s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">partial_apply</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to partial_apply’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-partial-apply-s-documentation">
+<h1>Welcome to partial_apply’s documentation!<a class="headerlink" href="#welcome-to-partial-apply-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/crowsonkb/partial_apply">View on GitHub</a></li>
+</ul>
+<span class="target" id="module-partial_apply"></span><p>Partial application of functions and method names, supporting placeholder
+values for positional arguments.</p>
+<p>Unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code>, placeholder values are supported so that
+positional arguments for partial application do not need to be supplied solely
+from left to right. Keyword arguments are handled equivalently to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code>. It is also possible to “partially apply” a method
+name, producing a function which looks up the method to call on the object
+supplied as its first argument.</p>
+<dl class="data">
+<dt id="partial_apply.Empty">
+<code class="descclassname">partial_apply.</code><code class="descname">Empty</code><em class="property"> = Empty</em><a class="headerlink" href="#partial_apply.Empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A placeholder for arguments which will be supplied later.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="partial_apply.PartialFn">
+<em class="property">class </em><code class="descclassname">partial_apply.</code><code class="descname">PartialFn</code><span class="sig-paren">(</span><em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partial_apply/partial_apply.html#PartialFn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partial_apply.PartialFn" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function partially applied to positional and keyword arguments.</p>
+<p>Keyword arguments are handled equivalently to <code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code>, but
+arbitrary sets of positional arguments can be partially applied.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Skipping partial application of positional arguments using the
+<a class="reference internal" href="#partial_apply.Empty" title="partial_apply.Empty"><code class="xref py py-data docutils literal notranslate"><span class="pre">Empty</span></code></a> placeholder:</p>
+<p>Create a partially applied function from <code class="docutils literal notranslate"><span class="pre">fn</span></code> where the third argument
+is <code class="docutils literal notranslate"><span class="pre">'thing'</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">args</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">PartialFn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="s1">&#39;thing&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">PartialFn(&lt;function fn at 0x11b29a598&gt;, Empty, Empty, &#39;thing&#39;)</span>
+</pre></div>
+</div>
+<p>With two placeholders, you must call <code class="docutils literal notranslate"><span class="pre">p</span></code> with at least two positional
+arguments. They fill in the placeholders from left to right.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(1, 2, &#39;thing&#39;)</span>
+</pre></div>
+</div>
+<p>Subsequent positional arguments to <code class="docutils literal notranslate"><span class="pre">p</span></code> are applied after the third
+parameter.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(1, 2, &#39;thing&#39;, 3)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>func</strong> (<em>callable</em>) – The wrapped function.</li>
+<li><strong>args</strong> (<em>tuple</em>) – Positional arguments for the wrapped function.</li>
+<li><strong>kwargs</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>any</em><em>]</em>) – Keyword arguments for the wrapped function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="partial_apply.PartialFn.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partial_apply/partial_apply.html#PartialFn.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partial_apply.PartialFn.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new partially applied function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<em>callable</em>) – The function to wrap.</li>
+<li><strong>args</strong> – Positional arguments for the wrapped function.</li>
+<li><strong>kwargs</strong> – Keyword arguments for the wrapped function.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>TypeError</strong> – If the first argument is not callable.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="partial_apply.PartialFn.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partial_apply/partial_apply.html#PartialFn.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partial_apply.PartialFn.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the partially applied function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – Additional positional arguments for the wrapped
+function.</li>
+<li><strong>kwargs</strong> – Additional keyword arguments for the wrapped
+function.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The return value of the wrapped function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">any</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>TypeError</strong> – If less positional arguments are supplied than
+placeholders.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="partial_apply.PartialMethod">
+<em class="property">class </em><code class="descclassname">partial_apply.</code><code class="descname">PartialMethod</code><span class="sig-paren">(</span><em>name</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partial_apply/partial_apply.html#PartialMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partial_apply.PartialMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method name partially applied to positional and keyword arguments.</p>
+<p>Keyword arguments are handled equivalently to <code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code>, but
+arbitrary sets of positional arguments can be partially applied (see
+<a class="reference internal" href="#partial_apply.PartialFn" title="partial_apply.PartialFn"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialFn</span></code></a> for an example). When an instance of
+<a class="reference internal" href="#partial_apply.PartialMethod" title="partial_apply.PartialMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialMethod</span></code></a> is called, the object to look up the method on is
+supplied as the first argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Setting up some example classes.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">SomeClass</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="k">return</span> <span class="n">args</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">some_instance</span> <span class="o">=</span> <span class="n">SomeClass</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">OtherClass</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">other_instance</span> <span class="o">=</span> <span class="n">OtherClass</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create a partially applied function where the method name is <code class="docutils literal notranslate"><span class="pre">method</span></code> and
+the second positional argument is 1.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">PartialMethod</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">PartialMethod(&#39;method&#39;, Empty, 1)</span>
+</pre></div>
+</div>
+<p>The partially applied function takes the object to look up the method on as
+the first argument. Subsequent positional arguments are handled as in
+<a class="reference internal" href="#partial_apply.PartialFn" title="partial_apply.PartialFn"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialFn</span></code></a>. Apply the function to different objects of different
+types (they must all have a method named <code class="docutils literal notranslate"><span class="pre">method</span></code>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">(</span><span class="n">some_instance</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(2, 1, 3)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">(</span><span class="n">other_instance</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – The method name.</li>
+<li><strong>args</strong> (<em>tuple</em>) – Positional arguments for the method.</li>
+<li><strong>kwargs</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>any</em><em>]</em>) – Keyword arguments for the method.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="partial_apply.PartialMethod.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>name</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partial_apply/partial_apply.html#PartialMethod.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partial_apply.PartialMethod.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new partially applied method name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The method name.</li>
+<li><strong>args</strong> – Positional arguments for the method.</li>
+<li><strong>kwargs</strong> – Keyword arguments for the method.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>TypeError</strong> – If the first argument is not a string.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="partial_apply.PartialMethod.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>obj</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partial_apply/partial_apply.html#PartialMethod.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partial_apply.PartialMethod.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up and calls the method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> (<em>any</em>) – The object to look up the method on.</li>
+<li><strong>args</strong> – Additional positional arguments for the method.</li>
+<li><strong>kwargs</strong> – Additional keyword arguments for the method.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The return value of the method.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">any</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>TypeError</strong> – If less positional arguments are supplied than
+placeholders.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Katherine Crowson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
