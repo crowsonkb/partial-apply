@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name='partial_apply',
+    name='partial-apply',
     version='1.0.0',
     description='Partial application of functions and method names, supporting '
                 'placeholder values for positional arguments.',
     long_description=open('README.rst').read(),
-    url='https://github.com/crowsonkb/partial_apply',
+    url='https://github.com/crowsonkb/partial-apply',
     author='Katherine Crowson',
     author_email='crowsonkb@gmail.com',
     license='MIT',

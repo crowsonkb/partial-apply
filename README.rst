@@ -1,4 +1,4 @@
-partial_apply
+partial-apply
 =============
 
 Partial application of functions and method names, supporting placeholder values for positional arguments.
@@ -11,11 +11,11 @@ Unlike `functools.partial() <https://docs.python.org/3/library/functools.html#fu
 
 **Installation:**
 
-- ``$ pip install partial_apply``
+- ``$ pip install partial-apply``
 
 **Documentation:**
 
-- Sphinx generated API documentation is available in the ``docs`` subdirectory of this repository and is also published on `GitHub Pages <https://crowsonkb.github.io/partial_apply/>`_.
+- Sphinx generated API documentation is available in the ``docs`` subdirectory of this repository and is also published on `GitHub Pages <https://crowsonkb.github.io/partial-apply/>`_.
 
 Examples
 --------

@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'partial_apply'
+project = 'partial-apply'
 copyright = '2018, Katherine Crowson'
 author = 'Katherine Crowson'
 
@@ -104,7 +104,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'partial_applydoc'
+htmlhelp_basename = 'partial-applydoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -131,7 +131,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'partial_apply.tex', 'partial\\_apply Documentation',
+    (master_doc, 'partial-apply.tex', 'partial\\_apply Documentation',
      'Katherine Crowson', 'manual'),
 ]
 
@@ -141,7 +141,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'partial_apply', 'partial_apply Documentation',
+    (master_doc, 'partial-apply', 'partial-apply Documentation',
      [author], 1)
 ]
 
@@ -152,8 +152,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'partial_apply', 'partial_apply Documentation',
-     author, 'partial_apply', 'One line description of project.',
+    (master_doc, 'partial-apply', 'partial_apply Documentation',
+     author, 'partial-apply', 'One line description of project.',
      'Miscellaneous'),
 ]
 
