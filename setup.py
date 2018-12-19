@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='partial_apply',
-    version='1.0',
+    version='1.0.0',
     description='Partial application of functions and method names, supporting '
                 'placeholder values for positional arguments.',
     long_description=open('README.rst').read(),
